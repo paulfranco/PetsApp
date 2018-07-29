@@ -65,10 +65,11 @@ public class CatalogActivity extends AppCompatActivity {
     private void displayDatabaseInfo() {
         // To access our database, we instantiate our subclass of SQLiteOpenHelper
         // and pass the context, which is the current activity.
-        PetDBHelper mDbHelper = new PetDBHelper(this);
+        // PetDBHelper mDbHelper = new PetDBHelper(this);
 
+        // We no longer need this code because we will use a ContentProvider instead
         // Create and/or open a database to read from it
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        //SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
         // Perform this raw SQL query "SELECT * FROM pets"
         // to get a Cursor that contains all rows from the pets table.
@@ -82,7 +83,10 @@ public class CatalogActivity extends AppCompatActivity {
                 PetEntry.COLUMN_PET_WEIGHT
         };
 
-        Cursor cursor = db.query(
+        // This interacts directly with the database which is a bad practice. It is better practice to interact with the database
+        // through the pet resolver and pet provider
+        // Perform a query on the pets table
+        /**Cursor cursor = db.query(
                 PetEntry.TABLE_NAME,
                 projection,
                 null,
@@ -90,6 +94,11 @@ public class CatalogActivity extends AppCompatActivity {
                 null,
                 null,
                 null);
+         */
+
+        // Perform a query on the provider using the ContentResolver,
+        // Use the {@link PetEntry#CONTENT_URI} to access the pet Data
+        Cursor cursor = getContentResolver().query(PetEntry.CONTENT_URI,projection, null, null, null);
 
         TextView displayView = (TextView) findViewById(R.id.text_view_pet);
 
